@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using WebAPI.DAO;
 using WebAPI.Models;
+using WebAPI.Services;
 
 try
 {
@@ -29,6 +31,9 @@ try
     #endregion
 
     // Add services to the container.
+
+    builder.Services.AddScoped<IProductAccessService, ProductAccessService>();
+    builder.Services.AddScoped<IProductService, ProductService>();
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
