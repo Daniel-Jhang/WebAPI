@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Serilog;
+using WebAPI.Models;
 
 try
 {
@@ -21,7 +24,8 @@ try
     #endregion
 
     #region DB
-
+    builder.Services.AddDbContext<NorthwindContext>(options => 
+    options.UseSqlServer(config.GetConnectionString("NorthwindConnection")));
     #endregion
 
     // Add services to the container.
