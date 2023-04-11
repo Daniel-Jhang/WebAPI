@@ -17,9 +17,25 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ProductDTO>> Get(int? startProductId, int? endProductId)
+        public async Task<ApiResultDataModel> Get(int? startProductId, int? endProductId)
         {
-            return await _productService.GetProductList(startProductId, endProductId);
+            try
+            {
+                var result = new ApiResultDataModel();
+                var data = await _productService.GetProductList(startProductId, endProductId);
+                result.Data = data;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultDataModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorMessageDetail = ex.ToString()
+                };
+            }
         }
     }
 }

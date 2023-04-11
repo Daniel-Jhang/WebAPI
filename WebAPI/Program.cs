@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using WebAPI.DAO;
 using WebAPI.Models;
@@ -14,7 +13,8 @@ try
     {
         var env = hostContext.HostingEnvironment;
         config.SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-          .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true);
+          .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
+          .AddJsonFile(path: $"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true); ;
     })
         .UseSerilog((hostingContext, loggerConfig) =>
          loggerConfig.ReadFrom.Configuration(hostingContext.Configuration).Enrich.FromLogContext()
@@ -26,7 +26,7 @@ try
     #endregion
 
     #region DB
-    builder.Services.AddDbContext<NorthwindContext>(options => 
+    builder.Services.AddDbContext<NorthwindContext>(options =>
     options.UseSqlServer(config.GetConnectionString("NorthwindConnection")));
     #endregion
 
@@ -57,8 +57,8 @@ try
 
     app.Run();
 }
-catch (Exception)
+catch (Exception ex)
 {
-    Console.WriteLine("Error");
+    Log.Fatal(ex, "Host terminated unexpectedly");
 }
 
