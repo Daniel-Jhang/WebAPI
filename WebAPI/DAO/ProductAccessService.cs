@@ -16,11 +16,11 @@ namespace WebAPI.DAO
             this._logger = logger;
         }
 
-        public async Task<Product> GetProduct(int productId)
+        public async Task<Product> GetProductById(int productId)
         {
             try
             {
-                var product = await _dbContext.Products.SingleOrDefaultAsync(x=>x.ProductId == productId);
+                var product = await _dbContext.Products.SingleOrDefaultAsync(x => x.ProductId == productId);
                 if (product == null)
                 {
                     _logger.Error($"找不到產品，產品編號: {productId} 不存在");
@@ -33,7 +33,18 @@ namespace WebAPI.DAO
                 throw new Exception(ex.ToString());
             }
         }
-
+        public async Task<Product> GetProductByName(string productName)
+        {
+            try
+            {
+                var product = await _dbContext.Products.SingleOrDefaultAsync(x => x.ProductName == productName);
+                return product;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
         public async Task<List<ProductDTO>> GetProductList(int? startProductId, int? endProductId)
         {
             try
@@ -78,12 +89,11 @@ namespace WebAPI.DAO
                 throw new Exception(ex.ToString());
             }
         }
-
         public async Task<ProductDTO> UpdateProduct(ProductDTO product)
         {
             try
             {
-                var productToUpdate = await GetProduct(product.ProductId);
+                var productToUpdate = await GetProductById(product.ProductId);
                 var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
                 try
                 {
@@ -111,6 +121,47 @@ namespace WebAPI.DAO
                     await dbTransaction.DisposeAsync();
                 }
 
+                return product;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+        public async Task<ProductDTO> CreateProduct(ProductDTO product)
+        {
+            try
+            {
+                var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    Product productToDB = new Product()
+                    {
+                        ProductName = product.ProductName,
+                        SupplierId = product.SupplierId,
+                        CategoryId = product.CategoryId,
+                        QuantityPerUnit = product.QuantityPerUnit,
+                        UnitPrice = product.UnitPrice,
+                        UnitsInStock = product.UnitsInStock,
+                        UnitsOnOrder = product.UnitsOnOrder,
+                        ReorderLevel = product.ReorderLevel,
+                        Discontinued = product.Discontinued
+                    };
+                    await _dbContext.Products.AddAsync(productToDB);
+                    await _dbContext.SaveChangesAsync();
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await dbTransaction.RollbackAsync();
+                    _logger.Error($"資料庫交易(Transaction)時發生問題: {ex}");
+                    throw new Exception($"資料庫交易(Transaction)時發生問題", ex);
+                }
+                finally
+                {
+                    await dbTransaction.DisposeAsync();
+                }
+                product.ProductId = GetProductByName(product.ProductName).Result.ProductId;
                 return product;
             }
             catch (Exception ex)

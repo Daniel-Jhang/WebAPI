@@ -16,6 +16,28 @@ namespace WebAPI.Controllers
             this._productService = productService;
         }
 
+        [HttpPost]
+        public async Task<ApiResultDataModel> Post(ProductDTO product)
+        {
+            try
+            {
+                var result = new ApiResultDataModel();
+                var data = await _productService.CreateProduct(product);
+                result.Data = data;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultDataModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorMessageDetail = ex.ToString()
+                };
+            }
+        }
+
         [HttpGet]
         public async Task<ApiResultDataModel> Get(int? startProductId, int? endProductId)
         {
@@ -39,7 +61,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ApiResultDataModel>Put(ProductDTO product)
+        public async Task<ApiResultDataModel> Put(ProductDTO product)
         {
             try
             {

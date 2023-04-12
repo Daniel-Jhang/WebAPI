@@ -12,6 +12,17 @@ namespace WebAPI.Services
             this._productAccessService = productAccessService;
         }
 
+        public async Task<ProductDTO> CreateProduct(ProductDTO product)
+        {
+            var existProduct = await _productAccessService.GetProductByName(product.ProductName);
+            if (existProduct != null)
+            {
+                throw new Exception("上架產品重複");
+            }
+            var productToCreate = await _productAccessService.CreateProduct(product);
+            return productToCreate;
+        }
+
         public async Task<List<ProductDTO>> GetProductList(int? startProductId, int? endProductId)
         {
             // Business Logic
