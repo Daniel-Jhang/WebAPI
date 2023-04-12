@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTO;
+using WebAPI.Models;
 using WebAPI.Services;
 
 namespace WebAPI.Controllers
@@ -67,6 +68,28 @@ namespace WebAPI.Controllers
             {
                 var result = new ApiResultDataModel();
                 var data = await _productService.UpdateProduct(product);
+                result.Data = data;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultDataModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorMessageDetail = ex.ToString()
+                };
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ApiResultDataModel> Delete(int productId)
+        {
+            try
+            {
+                var result = new ApiResultDataModel();
+                var data = await _productService.DeleteProduct(productId);
                 result.Data = data;
                 result.IsSuccess = true;
                 return result;

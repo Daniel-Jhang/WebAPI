@@ -16,6 +16,47 @@ namespace WebAPI.DAO
             this._logger = logger;
         }
 
+        public async Task<ProductDTO> CreateProduct(ProductDTO product)
+        {
+            try
+            {
+                var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    Product productToDB = new Product()
+                    {
+                        ProductName = product.ProductName,
+                        SupplierId = product.SupplierId,
+                        CategoryId = product.CategoryId,
+                        QuantityPerUnit = product.QuantityPerUnit,
+                        UnitPrice = product.UnitPrice,
+                        UnitsInStock = product.UnitsInStock,
+                        UnitsOnOrder = product.UnitsOnOrder,
+                        ReorderLevel = product.ReorderLevel,
+                        Discontinued = product.Discontinued
+                    };
+                    await _dbContext.Products.AddAsync(productToDB);
+                    await _dbContext.SaveChangesAsync();
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await dbTransaction.RollbackAsync();
+                    _logger.Error($"資料庫交易(Transaction)時發生問題: {ex}");
+                    throw new Exception($"資料庫交易(Transaction)時發生問題", ex);
+                }
+                finally
+                {
+                    await dbTransaction.DisposeAsync();
+                }
+                product.ProductId = GetProductByName(product.ProductName).Result.ProductId;
+                return product;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
         public async Task<Product> GetProductById(int productId)
         {
             try
@@ -128,26 +169,25 @@ namespace WebAPI.DAO
                 throw new Exception(ex.ToString());
             }
         }
-        public async Task<ProductDTO> CreateProduct(ProductDTO product)
+        public async Task<ProductDTO> DeleteProduct(int productId)
         {
             try
             {
+                var productToDelete = await GetProductById(productId);
+
+                // 檢查是否有關聯的訂單資料
+                var orderList = await _dbContext.OrderDetails.Where(x => x.ProductId == productId).ToListAsync();
+
                 var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
                 try
                 {
-                    Product productToDB = new Product()
+                    if (orderList.Any())
                     {
-                        ProductName = product.ProductName,
-                        SupplierId = product.SupplierId,
-                        CategoryId = product.CategoryId,
-                        QuantityPerUnit = product.QuantityPerUnit,
-                        UnitPrice = product.UnitPrice,
-                        UnitsInStock = product.UnitsInStock,
-                        UnitsOnOrder = product.UnitsOnOrder,
-                        ReorderLevel = product.ReorderLevel,
-                        Discontinued = product.Discontinued
-                    };
-                    await _dbContext.Products.AddAsync(productToDB);
+                        // 刪除關聯的訂單資料
+                        _dbContext.OrderDetails.RemoveRange(orderList);
+                    }
+
+                    _dbContext.Products.Remove(productToDelete);
                     await _dbContext.SaveChangesAsync();
                     await dbTransaction.CommitAsync();
                 }
@@ -161,8 +201,21 @@ namespace WebAPI.DAO
                 {
                     await dbTransaction.DisposeAsync();
                 }
-                product.ProductId = GetProductByName(product.ProductName).Result.ProductId;
-                return product;
+
+                var result = new ProductDTO
+                {
+                    ProductId = productToDelete.ProductId,
+                    ProductName = productToDelete.ProductName,
+                    SupplierId = productToDelete.SupplierId,
+                    CategoryId = productToDelete.CategoryId,
+                    QuantityPerUnit = productToDelete.QuantityPerUnit,
+                    UnitPrice = productToDelete.UnitPrice,
+                    UnitsInStock = productToDelete.UnitsInStock,
+                    UnitsOnOrder = productToDelete.UnitsOnOrder,
+                    ReorderLevel = productToDelete.ReorderLevel,
+                    Discontinued = productToDelete.Discontinued
+                };
+                return result;
             }
             catch (Exception ex)
             {
