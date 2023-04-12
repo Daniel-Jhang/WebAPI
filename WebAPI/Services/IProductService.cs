@@ -5,5 +5,6 @@ namespace WebAPI.Services
     public interface IProductService
     {
         Task<List<ProductDTO>> GetProductList(int? startProductId, int? endProductId);
+        Task<ProductDTO> UpdateProduct(ProductDTO product);
     }
 }

@@ -17,5 +17,11 @@ namespace WebAPI.Services
             // Business Logic
             return await _productAccessService.GetProductList(startProductId, endProductId);
         }
+
+        public async Task<ProductDTO> UpdateProduct(ProductDTO product)
+        {
+            var productToUpdate = await _productAccessService.UpdateProduct(product);
+            return productToUpdate;
+        }
     }
 }

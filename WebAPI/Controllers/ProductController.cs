@@ -37,5 +37,27 @@ namespace WebAPI.Controllers
                 };
             }
         }
+
+        [HttpPut]
+        public async Task<ApiResultDataModel>Put(ProductDTO product)
+        {
+            try
+            {
+                var result = new ApiResultDataModel();
+                var data = await _productService.UpdateProduct(product);
+                result.Data = data;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultDataModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorMessageDetail = ex.ToString()
+                };
+            }
+        }
     }
 }

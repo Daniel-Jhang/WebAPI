@@ -16,6 +16,24 @@ namespace WebAPI.DAO
             this._logger = logger;
         }
 
+        public async Task<Product> GetProduct(int productId)
+        {
+            try
+            {
+                var product = await _dbContext.Products.SingleOrDefaultAsync(x=>x.ProductId == productId);
+                if (product == null)
+                {
+                    _logger.Error($"找不到產品，產品編號: {productId} 不存在");
+                    throw new Exception($"找不到產品，產品編號: {productId} 不存在");
+                }
+                return product;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+
         public async Task<List<ProductDTO>> GetProductList(int? startProductId, int? endProductId)
         {
             try
@@ -54,6 +72,46 @@ namespace WebAPI.DAO
                 }
 
                 return productList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+
+        public async Task<ProductDTO> UpdateProduct(ProductDTO product)
+        {
+            try
+            {
+                var productToUpdate = await GetProduct(product.ProductId);
+                var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    productToUpdate.ProductName = product.ProductName;
+                    productToUpdate.SupplierId = product.SupplierId;
+                    productToUpdate.CategoryId = product.CategoryId;
+                    productToUpdate.QuantityPerUnit = product.QuantityPerUnit;
+                    productToUpdate.UnitPrice = product.UnitPrice;
+                    productToUpdate.UnitsInStock = product.UnitsInStock;
+                    productToUpdate.UnitsOnOrder = product.UnitsOnOrder;
+                    productToUpdate.ReorderLevel = product.ReorderLevel;
+                    productToUpdate.Discontinued = product.Discontinued;
+
+                    await _dbContext.SaveChangesAsync();
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await dbTransaction.RollbackAsync();
+                    _logger.Error($"資料庫交易(Transaction)時發生問題: {ex}");
+                    throw new Exception($"資料庫交易(Transaction)時發生問題", ex);
+                }
+                finally
+                {
+                    await dbTransaction.DisposeAsync();
+                }
+
+                return product;
             }
             catch (Exception ex)
             {
