@@ -1,7 +1,4 @@
-﻿using WebAPI.DTO;
-using WebAPI.Models;
-
-namespace WebAPI.DAO
+﻿namespace WebAPI.DAO
 {
     public interface IProductAccessService
     {

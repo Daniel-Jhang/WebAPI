@@ -1,6 +1,4 @@
-﻿using WebAPI.DTO;
-
-namespace WebAPI.Services
+﻿namespace WebAPI.Services
 {
     public interface IProductService
     {

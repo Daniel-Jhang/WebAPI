@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebAPI.DTO;
-using WebAPI.Models;
-using ILogger = Serilog.ILogger;
-
-namespace WebAPI.DAO
+﻿namespace WebAPI.DAO
 {
     public class ProductAccessService : IProductAccessService
     {

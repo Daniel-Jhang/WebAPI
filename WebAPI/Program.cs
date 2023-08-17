@@ -1,8 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using WebAPI.DAO;
-using WebAPI.Models;
-using WebAPI.Services;
 
 try
 {
@@ -61,4 +56,3 @@ catch (Exception ex)
 {
     Log.Fatal(ex, "Host terminated unexpectedly");
 }
-

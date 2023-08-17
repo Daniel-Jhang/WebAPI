@@ -1,7 +1,4 @@
-﻿using WebAPI.DAO;
-using WebAPI.DTO;
-
-namespace WebAPI.Services
+﻿namespace WebAPI.Services
 {
     public class ProductService : IProductService
     {
