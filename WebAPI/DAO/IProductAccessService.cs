@@ -1,4 +1,4 @@
-﻿namespace WebAPI.DAO
+﻿namespace NorthwindWebAPI.DAO
 {
     public interface IProductAccessService
     {

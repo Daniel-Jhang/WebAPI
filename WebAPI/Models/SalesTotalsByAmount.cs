@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Models
+﻿namespace NorthwindWebAPI.Models
 {
     public partial class SalesTotalsByAmount
     {

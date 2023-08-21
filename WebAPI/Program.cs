@@ -1,4 +1,3 @@
-
 try
 {
     var builder = WebApplication.CreateBuilder(args);

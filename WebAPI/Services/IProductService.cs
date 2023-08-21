@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Services
+﻿namespace NorthwindWebAPI.Services
 {
     public interface IProductService
     {

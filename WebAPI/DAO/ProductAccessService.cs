@@ -1,4 +1,4 @@
-﻿namespace WebAPI.DAO
+﻿namespace NorthwindWebAPI.DAO
 {
     public class ProductAccessService : IProductAccessService
     {
@@ -7,8 +7,8 @@
 
         public ProductAccessService(NorthwindContext dbContext, ILogger logger)
         {
-            this._dbContext = dbContext;
-            this._logger = logger;
+            _dbContext = dbContext;
+            _logger = logger;
         }
 
         /// <summary>

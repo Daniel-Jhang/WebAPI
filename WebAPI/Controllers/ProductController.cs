@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Controllers
+﻿namespace NorthwindWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -8,7 +8,7 @@
 
         public ProductController(IProductService productService)
         {
-            this._productService = productService;
+            _productService = productService;
         }
 
         [HttpPost]

@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Services
+﻿namespace NorthwindWebAPI.Services
 {
     public class ProductService : IProductService
     {
@@ -6,7 +6,7 @@
 
         public ProductService(IProductAccessService productAccessService)
         {
-            this._productAccessService = productAccessService;
+            _productAccessService = productAccessService;
         }
 
         public async Task<ProductDTO> CreateProduct(ProductDTO product)

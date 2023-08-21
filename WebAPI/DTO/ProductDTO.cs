@@ -1,4 +1,4 @@
-﻿namespace WebAPI.DTO
+﻿namespace NorthwindWebAPI.DTO
 {
     public class ProductDTO
     {
