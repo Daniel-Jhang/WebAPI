@@ -1,5 +1,8 @@
 ﻿namespace NorthwindWebAPI.Controllers
 {
+    /// <summary>
+    /// 使用EF Core操作Northwind資料庫，實作基本的CRUD和3-Tier架構(Controller, Service, DataAccess)
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
