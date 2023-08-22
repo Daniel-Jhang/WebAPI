@@ -24,3 +24,7 @@ GO
 --	[Context] [varchar](255) NOT NULL,
 --	)
 --GO
+
+INSERT [dbo].[TodoList] ([TodoID], [Status], [Context], [Editing]) VALUES (NEWID(), 1, N'去上課', 0)
+INSERT [dbo].[TodoList] ([TodoID], [Status], [Context], [Editing]) VALUES (NEWID(), 1, N'去看書', 0)
+INSERT [dbo].[TodoList] ([TodoID], [Status], [Context], [Editing]) VALUES (NEWID(), 0, N'玩遊戲', 0)

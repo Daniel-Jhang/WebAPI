@@ -1,4 +1,5 @@
 using LabWebAPI.Data;
+using LabWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -64,6 +65,8 @@ namespace LabWebAPI
             #endregion
 
             // Add services to the container.
+            builder.Services.AddScoped<ITodoListDao, TodoListDao>();
+            builder.Services.AddScoped<ITodoListService, TodoListService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
