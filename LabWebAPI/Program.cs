@@ -1,10 +1,3 @@
-using LabWebAPI.Data;
-using LabWebAPI.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System.Configuration;
-
 namespace LabWebAPI
 {
     public class Program

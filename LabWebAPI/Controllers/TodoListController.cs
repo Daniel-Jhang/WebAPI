@@ -1,6 +1,4 @@
-﻿using LabWebAPI.Services;
-
-namespace LabWebAPI.Controllers
+﻿namespace LabWebAPI.Controllers
 {
     /// <summary>
     /// DONE: 透過appsettings.json中設定連線字串，來切換連線的資料庫(補Medium文章)

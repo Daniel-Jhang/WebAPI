@@ -2,6 +2,7 @@
 global using LabWebAPI.DataAccessObject;
 global using LabWebAPI.DataTransferObject;
 global using LabWebAPI.Models;
+global using LabWebAPI.Services;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Serilog;

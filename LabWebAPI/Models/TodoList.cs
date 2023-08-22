@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LabWebAPI.Models;
+﻿namespace LabWebAPI.Models;
 
 public partial class TodoList
 {
