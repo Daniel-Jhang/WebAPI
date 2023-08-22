@@ -1,4 +1,6 @@
-﻿namespace LabWebAPI.Controllers
+﻿using LabWebAPI.Services;
+
+namespace LabWebAPI.Controllers
 {
     /// <summary>
     /// DONE: 透過appsettings.json中設定連線字串，來切換連線的資料庫(補Medium文章)
@@ -12,13 +14,21 @@
     [ApiController]
     public class TodoListController : ControllerBase
     {
+        private readonly ITodoListService _todoListService;
+
+        public TodoListController(ITodoListService todoListService)
+        {
+            this._todoListService = todoListService;
+        }
+
         [HttpPost]
-        public async Task<ApiResultModel> Post()
+        public async Task<ApiResultModel> Post(TodoListDto todoRecord)
         {
             try
             {
                 var result = new ApiResultDataModel();
-
+                var data = await _todoListService.CreateTodoRecord(todoRecord);
+                result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }
@@ -39,7 +49,8 @@
             try
             {
                 var result = new ApiResultDataModel();
-
+                var data = await _todoListService.GetAllTodoList();
+                result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }
@@ -55,12 +66,13 @@
         }
 
         [HttpPut]
-        public async Task<ApiResultModel> Put()
+        public async Task<ApiResultModel> Put(TodoListDto todoRecord)
         {
             try
             {
                 var result = new ApiResultDataModel();
-
+                var data = await _todoListService.UpdateProduct(todoRecord);
+                result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }
@@ -76,12 +88,13 @@
         }
 
         [HttpDelete]
-        public async Task<ApiResultModel> Delete()
+        public async Task<ApiResultModel> Delete(Guid todoRecordId)
         {
             try
             {
                 var result = new ApiResultDataModel();
-
+                var data = await _todoListService.DeleteProduct(todoRecordId);
+                result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }
