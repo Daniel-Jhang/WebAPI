@@ -1,3 +1,9 @@
+using LabWebAPI.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System.Configuration;
+
 namespace LabWebAPI
 {
     public class Program
@@ -25,7 +31,36 @@ namespace LabWebAPI
 
             #region Set DataBase Connection
             // EF Core
+            if (!int.TryParse(configure["SqlCommandTimeout"], out int commandTimeout))
+            {
+                commandTimeout = 300;
+            }
 
+            builder.Services.AddDbContext<LabContext>(options =>
+            {
+                switch (configure["Provider"])
+                {
+                    case "MSSQL":
+                        options.UseSqlServer(configure.GetConnectionString("MSSQL"), optionsBuilder =>
+                        {
+                            optionsBuilder.CommandTimeout(commandTimeout);
+                            optionsBuilder.EnableRetryOnFailure();
+                        });
+                        break;
+
+                    case "Oracle":
+                        options.UseOracle(configure.GetConnectionString("Oracle"), optionsBuilder =>
+                        {
+                            optionsBuilder.CommandTimeout(commandTimeout);
+                        });
+                        break;
+
+                    // 可以新增其他資料庫提供者的處理邏輯
+
+                    default:
+                        throw new NotSupportedException($"Provider {configure["Provider"]} is not supported.");
+                }
+            }, ServiceLifetime.Scoped);
             #endregion
 
             // Add services to the container.

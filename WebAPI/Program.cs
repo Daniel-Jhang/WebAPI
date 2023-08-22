@@ -5,10 +5,10 @@ try
     #region Configure
     builder.Host.ConfigureAppConfiguration((hostContext, config) =>
     {
-        var env = hostContext.HostingEnvironment;
-        config.SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-          .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
-          .AddJsonFile(path: $"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true); ;
+        var environment = hostContext.HostingEnvironment;
+        config.SetBasePath(environment.ContentRootPath)
+        .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
+        .AddJsonFile(path: $"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
     })
         .UseSerilog((hostingContext, loggerConfig) =>
          loggerConfig.ReadFrom.Configuration(hostingContext.Configuration).Enrich.FromLogContext()
