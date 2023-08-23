@@ -1,7 +1,7 @@
-﻿global using LabWebAPI.Data;
+﻿global using DataAccessLibrary.Data;
+global using DataAccessLibrary.Models.LAB;
 global using LabWebAPI.DataAccessObject;
 global using LabWebAPI.DataTransferObject;
-global using LabWebAPI.Models;
 global using LabWebAPI.Services;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
