@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項�
 		SQLCommand.sql = SQLCommand.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{1EEF29C2-7390-4A0C-9A98-2A572AA7E05F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{139CC9C2-5A9B-4C9B-81D0-04C2278344E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{139CC9C2-5A9B-4C9B-81D0-04C2278344E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{139CC9C2-5A9B-4C9B-81D0-04C2278344E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EEF29C2-7390-4A0C-9A98-2A572AA7E05F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEF29C2-7390-4A0C-9A98-2A572AA7E05F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEF29C2-7390-4A0C-9A98-2A572AA7E05F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEF29C2-7390-4A0C-9A98-2A572AA7E05F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
