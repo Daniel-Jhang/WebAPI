@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DataAccessLibrary.Models;
-using Microsoft.EntityFrameworkCore;
-
-namespace DataAccessLibrary.Data;
+﻿namespace DataAccessLibrary.Data;
 
 public partial class LabContext : DbContext
 {

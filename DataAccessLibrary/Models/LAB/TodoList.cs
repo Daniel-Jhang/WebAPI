@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DataAccessLibrary.Models;
+﻿namespace DataAccessLibrary.Models.LAB;
 
 public partial class TodoList
 {
