@@ -61,6 +61,17 @@ namespace LabWebAPI
             builder.Services.AddScoped<ITodoListDao, TodoListDao>();
             builder.Services.AddScoped<ITodoListService, TodoListService>();
 
+            string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -79,6 +90,7 @@ namespace LabWebAPI
 
             app.UseAuthorization();
 
+            app.UseCors("_myAllowSpecificOrigins"); // 在這裡加入 UseCors
 
             app.MapControllers();
 
