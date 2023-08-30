@@ -57,20 +57,31 @@ namespace LabWebAPI
             }, ServiceLifetime.Scoped);
             #endregion
 
-            // Add services to the container.
+            #region Add services to the container
             builder.Services.AddScoped<ITodoListDao, TodoListDao>();
             builder.Services.AddScoped<ITodoListService, TodoListService>();
+            #endregion
 
-            string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            builder.Services.AddCors(options =>
+            #region Set Cross-Origin Resource Sharing(CORS)
+            var enableCorsHandling = configure.GetValue<bool>("EnableCorsHandling");
+            var allowSpecificOrigins = configure.GetValue<string>("AllowSpecificOrigins") ?? "";
+            var originsURL = configure.GetValue<string>("SpecificOriginsUrl") ?? "";
+
+            if (enableCorsHandling &&
+                !string.IsNullOrEmpty(allowSpecificOrigins) &&
+                !string.IsNullOrEmpty(originsURL))
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+                builder.Services.AddCors(options =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
+                    options.AddPolicy(name: allowSpecificOrigins, builder =>
+                    {
+                        builder.WithOrigins(originsURL)
+                                .AllowAnyMethod()
+                                .AllowAnyHeader();
+                    });
                 });
-            });
+            }
+            #endregion
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -90,7 +101,10 @@ namespace LabWebAPI
 
             app.UseAuthorization();
 
-            app.UseCors("_myAllowSpecificOrigins"); // 在這裡加入 UseCors
+            if (enableCorsHandling && !string.IsNullOrEmpty(allowSpecificOrigins))
+            {
+                app.UseCors(allowSpecificOrigins); // 在這裡加入 UseCors
+            }
 
             app.MapControllers();
 
