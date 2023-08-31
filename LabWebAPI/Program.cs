@@ -64,18 +64,15 @@ namespace LabWebAPI
 
             #region Set Cross-Origin Resource Sharing(CORS)
             var enableCorsHandling = configure.GetValue<bool>("EnableCorsHandling");
-            var allowSpecificOrigins = configure.GetValue<string>("AllowSpecificOrigins") ?? "";
-            var originsURL = configure.GetValue<string>("SpecificOriginsUrl") ?? "";
-
-            if (enableCorsHandling &&
-                !string.IsNullOrEmpty(allowSpecificOrigins) &&
-                !string.IsNullOrEmpty(originsURL))
+            var originsURLs = configure.GetSection("CorsConfigurations").Get<string[]>();
+            
+            if (enableCorsHandling && originsURLs != null)
             {
                 builder.Services.AddCors(options =>
                 {
-                    options.AddPolicy(name: allowSpecificOrigins, builder =>
+                    options.AddPolicy(name: "MyAllowSpecificOrigins", builder =>
                     {
-                        builder.WithOrigins(originsURL)
+                        builder.WithOrigins(originsURLs)
                                 .AllowAnyMethod()
                                 .AllowAnyHeader();
                     });
@@ -101,9 +98,9 @@ namespace LabWebAPI
 
             app.UseAuthorization();
 
-            if (enableCorsHandling && !string.IsNullOrEmpty(allowSpecificOrigins))
+            if (enableCorsHandling)
             {
-                app.UseCors(allowSpecificOrigins); // 在這裡加入 UseCors
+                app.UseCors("MyAllowSpecificOrigins"); // 在這裡加入 Cross-Origin Resource
             }
 
             app.MapControllers();
