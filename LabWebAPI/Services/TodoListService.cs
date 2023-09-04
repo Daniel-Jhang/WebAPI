@@ -3,17 +3,20 @@
     public class TodoListService : ITodoListService
     {
         private readonly ITodoListDao _todoListDao;
+        private readonly ILogger _logger;
 
-        public TodoListService(ITodoListDao todoListDao)
+        public TodoListService(ITodoListDao todoListDao, ILogger logger)
         {
             this._todoListDao = todoListDao;
+            this._logger = logger;
         }
 
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto todoRecord)
         {
             var exitTodoRecord = await _todoListDao.GetTodoRecord(context: todoRecord.Context);
-            if (exitTodoRecord != null)
+            if (exitTodoRecord.TodoId != Guid.Empty)
             {
+                _logger.Error("紀錄重複");
                 throw new Exception("紀錄重複");
             }
             var recordToCreate = await _todoListDao.CreateTodoRecord(todoRecord);

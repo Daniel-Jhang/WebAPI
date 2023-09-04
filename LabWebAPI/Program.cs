@@ -27,7 +27,7 @@ namespace LabWebAPI
             // EF Core
             if (!int.TryParse(configure["SqlCommandTimeout"], out int commandTimeout))
             {
-                commandTimeout = 300;
+                commandTimeout = 150;
             }
 
             builder.Services.AddDbContext<LabContext>(options =>
@@ -35,16 +35,22 @@ namespace LabWebAPI
                 switch (configure["Provider"])
                 {
                     case "MSSQL":
-                        options.UseSqlServer(configure.GetConnectionString("MSSQL"), optionsBuilder =>
+                        options.UseSqlServer(configure.GetConnectionString("MSSQL"), sqlServerOptionsAction: sqlOptions =>
                         {
-                            optionsBuilder.CommandTimeout(commandTimeout);
-                            optionsBuilder.EnableRetryOnFailure();
+                            sqlOptions.CommandTimeout(commandTimeout);
+                            // 之後再研究
+                            //sqlOptions.EnableRetryOnFailure(
+                            //    maxRetryCount: 10,
+                            //    maxRetryDelay: TimeSpan.FromSeconds(30),
+                            //    errorNumbersToAdd: null);
+                            //sqlOptions.ExecutionStrategy(CreateExecutionStrategy);
                         });
                         break;
 
                     case "Oracle":
                         options.UseOracle(configure.GetConnectionString("Oracle"), optionsBuilder =>
                         {
+                            // 在這裡設定 Oracle 特定的選項
                             optionsBuilder.CommandTimeout(commandTimeout);
                         });
                         break;
@@ -65,7 +71,7 @@ namespace LabWebAPI
             #region Set Cross-Origin Resource Sharing(CORS)
             var enableCorsHandling = configure.GetValue<bool>("EnableCorsHandling");
             var originsURLs = configure.GetSection("CorsConfigurations").Get<string[]>();
-            
+
             if (enableCorsHandling && originsURLs != null)
             {
                 builder.Services.AddCors(options =>

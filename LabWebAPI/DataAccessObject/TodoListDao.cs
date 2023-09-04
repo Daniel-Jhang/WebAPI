@@ -16,10 +16,9 @@
             using var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                newTodo.TodoId = Guid.NewGuid();
                 var todoRecordToDB = new TodoList
                 {
-                    TodoId = newTodo.TodoId,
+                    TodoId = Guid.NewGuid(),
                     Status = newTodo.Status,
                     Context = newTodo.Context,
                     Editing = newTodo.Editing
