@@ -14,15 +14,13 @@
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto newTodo)
         {
             using var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
+            var todoRecordToDB = new TodoList();
             try
             {
-                var todoRecordToDB = new TodoList
-                {
-                    TodoId = Guid.NewGuid(),
-                    Status = newTodo.Status,
-                    Context = newTodo.Context,
-                    Editing = newTodo.Editing
-                };
+                todoRecordToDB.TodoId = Guid.NewGuid();
+                todoRecordToDB.Status = newTodo.Status;
+                todoRecordToDB.Context = newTodo.Context;
+                todoRecordToDB.Editing = newTodo.Editing;
 
                 await _dbContext.TodoLists.AddAsync(todoRecordToDB);
                 await _dbContext.SaveChangesAsync();
@@ -35,7 +33,13 @@
                 _logger.Error($"資料庫交易(Transaction)時發生問題: {ex}");
                 throw new Exception("資料庫交易(Transaction)時發生問題", ex);
             }
-            return newTodo;
+            return new TodoListDto
+            {
+                TodoId = todoRecordToDB.TodoId,
+                Status = todoRecordToDB.Status,
+                Context = todoRecordToDB.Context,
+                Editing = todoRecordToDB.Editing
+            };
         }
 
         public async Task<TodoListDto> GetTodoRecord(Guid? todoRecordId = null, string? context = null)
@@ -152,7 +156,7 @@
             }
         }
 
-        private async Task<TodoList> GetTodoRecordById(Guid todoRecordId)
+        private async Task<TodoList> GetTodoRecordById(Guid? todoRecordId)
         {
             try
             {

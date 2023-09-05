@@ -14,7 +14,7 @@
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto todoRecord)
         {
             var exitTodoRecord = await _todoListDao.GetTodoRecord(context: todoRecord.Context);
-            if (exitTodoRecord.TodoId != Guid.Empty)
+            if (exitTodoRecord.TodoId != null)
             {
                 _logger.Error("紀錄重複");
                 throw new Exception("紀錄重複");
