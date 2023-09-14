@@ -4,7 +4,7 @@
     /// DONE: 透過appsettings.json中設定連線字串，來切換連線的資料庫(補Medium文章)
     /// DONE: 將DbContext和Table Models抽出去，新增DataAcessLibrary專案
     /// TODO: 串接Angular前端
-    /// TODO: 補CORS文章
+    /// TODO: 補CORS文章、(可選)前端import toastr套件的方法
     /// TODO: 嘗試用CustomDbConnectionFactory動態切換MSSQL或Oracle資料庫(先嘗試用EF Core，不可行再考慮用Dapper) 提示: builder.Services.AddDbContextFactory<LabContext>();
     /// TODO: 嘗試實作Dao框架
     /// TODO: 將存取資料的物件(DAO)移到DataAcessLibrary專案中
