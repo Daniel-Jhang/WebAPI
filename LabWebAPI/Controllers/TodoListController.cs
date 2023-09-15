@@ -72,7 +72,7 @@
             try
             {
                 var result = new ApiResultDataModel();
-                var data = await _todoListService.UpdateProduct(todoRecord);
+                var data = await _todoListService.UpdateTodoRecord(todoRecord);
                 result.Data = data;
                 result.IsSuccess = true;
                 return result;
@@ -94,8 +94,30 @@
             try
             {
                 var result = new ApiResultDataModel();
-                var data = await _todoListService.DeleteProduct(todoRecordId);
+                var data = await _todoListService.DeleteTodoRecord(todoRecordId);
                 result.Data = data;
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorDetail = ex.ToString()
+                };
+            }
+        }
+
+        [HttpDelete("clearCompleted")]
+        public async Task<ApiResultModel> ClearCompleted(List<Guid> todoRecordIdList)
+        {
+            try
+            {
+                var result = new ApiResultDataModel();
+                //var data = await _todoListService.DeleteProduct(todoRecordId);
+                //result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }

@@ -28,18 +28,24 @@
             return await _todoListDao.GetAllTodoList();
         }
 
-        public async Task<TodoListDto> UpdateProduct(TodoListDto todoRecord)
+        public async Task<TodoListDto> UpdateTodoRecord(TodoListDto todoRecord)
         {
             // Business Logic
             var recordToUpdate = await _todoListDao.UpdateTodoRecord(todoRecord);
             return recordToUpdate;
         }
 
-        public async Task<List<TodoListDto>> DeleteProduct(Guid todoRecordId)
+        public async Task<List<TodoListDto>> DeleteTodoRecord(Guid todoRecordId)
         {
             // Business Logic
             var result = await _todoListDao.DeleteTodoRecord(todoRecordId);
             return result;
+        }
+
+        public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
+        {
+            // Business Logic
+          throw new NotImplementedException();
         }
     }
 }

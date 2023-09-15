@@ -156,6 +156,19 @@
             }
         }
 
+        public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
+        {
+            throw new NotImplementedException();
+            try
+            {
+               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+        }
+
         private async Task<TodoList> GetTodoRecordById(Guid? todoRecordId)
         {
             try
