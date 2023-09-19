@@ -2,7 +2,7 @@
 {
     public class TodoListDto
     {
-        public Guid? TodoId { get; set; }
+        public string TodoId { get; set; } = null!;
         public bool Status { get; set; }
         public string Context { get; set; } = null!;
         public bool Editing { get; set; }

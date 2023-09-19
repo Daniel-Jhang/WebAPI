@@ -116,8 +116,8 @@
             try
             {
                 var result = new ApiResultDataModel();
-                //var data = await _todoListService.DeleteProduct(todoRecordId);
-                //result.Data = data;
+                var data = await _todoListService.ClearCompleted(todoRecordIdList);
+                result.Data = data;
                 result.IsSuccess = true;
                 return result;
             }

@@ -13,8 +13,8 @@
 
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto todoRecord)
         {
-            var exitTodoRecord = await _todoListDao.GetTodoRecord(context: todoRecord.Context);
-            if (exitTodoRecord.TodoId != null)
+            var existTodoRecord = await _todoListDao.GetTodoRecord(context: todoRecord.Context);
+            if (existTodoRecord.TodoId != null)
             {
                 _logger.Error("紀錄重複");
                 throw new Exception("紀錄重複");
@@ -45,7 +45,8 @@
         public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
         {
             // Business Logic
-          throw new NotImplementedException();
+          var result = await _todoListDao.ClearCompleted(todoRecordIdList);
+            return result;
         }
     }
 }
