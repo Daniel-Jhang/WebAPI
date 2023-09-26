@@ -88,8 +88,29 @@
             }
         }
 
+        [HttpPut("toggleAll")]
+        public async Task<ApiResultModel> ToggleAll(bool status)
+        {
+            try
+            {
+                var result = new ApiResultModel();
+                var data = await _todoListService.ToggleAll(status);
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new ApiResultModel
+                {
+                    IsSuccess = false,
+                    ErrorMessage = ex.Message,
+                    ErrorDetail = ex.ToString()
+                };
+            }
+        }
+
         [HttpDelete]
-        public async Task<ApiResultModel> Delete(Guid todoRecordId)
+        public async Task<ApiResultModel> Delete(string todoRecordId)
         {
             try
             {

@@ -10,7 +10,6 @@
             this._logger = logger;
             this._dbContext = dbContext;
         }
-
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto newTodo)
         {
             try
@@ -52,7 +51,6 @@
                 throw new Exception($"新增待辦事項時發生錯誤: {ex}");
             }
         }
-
         public async Task<TodoListDto> GetTodoRecord(Guid? todoRecordId = null, string? context = null)
         {
             try
@@ -90,7 +88,6 @@
                 throw new Exception($"取得指定待辦事項時發生錯誤: {ex}");
             }
         }
-
         public async Task<List<TodoListDto>> GetAllTodoList()
         {
             try
@@ -110,7 +107,6 @@
                 throw new Exception($"取得所有的待辦事項時發生錯誤: {ex}");
             }
         }
-
         public async Task<TodoListDto> UpdateTodoRecord(TodoListDto todoRecord)
         {
             try
@@ -143,8 +139,35 @@
                 throw new Exception($"更新待辦事項時發生錯誤: {ex}");
             }
         }
+        public async Task<bool> ToggleAll(bool status)
+        {
+            using var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
 
-        public async Task<List<TodoListDto>> DeleteTodoRecord(Guid todoRecordId)
+            try
+            {
+                foreach (var item in _dbContext.TodoLists.ToList())
+                {
+                    item.Status = status;
+                }
+
+                await _dbContext.SaveChangesAsync();
+                await dbTransaction.CommitAsync();
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                // 發生例外時進行回滾
+                await dbTransaction.RollbackAsync();
+                // 將例外訊息記錄至日誌
+                _logger.Error($"資料庫交易(Transaction)時發生問題: ToggleAll(), {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"更新所有待辦事項狀態時發生錯誤: {ex}");
+            }
+        }
+        public async Task<List<TodoListDto>> DeleteTodoRecord(string todoRecordId)
         {
             try
             {
@@ -175,7 +198,6 @@
                 throw new Exception($"刪除待辦事項時發生錯誤: {ex}");
             }
         }
-
         public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
         {
             try
@@ -205,7 +227,6 @@
                 throw new Exception($"刪除 已完成 待辦事項時發生錯誤: {ex}");
             }
         }
-
         private async Task<TodoList> GetTodoRecordById(string todoRecordId)
         {
             if (!Guid.TryParse(todoRecordId, out Guid queryTodoId))
@@ -222,7 +243,6 @@
             }
             return todoRecord;
         }
-
         private async Task<TodoList?> GetTodoRecordByContext(string context)
         {
             try

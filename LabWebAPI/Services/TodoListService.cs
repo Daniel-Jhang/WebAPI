@@ -35,7 +35,13 @@
             return recordToUpdate;
         }
 
-        public async Task<List<TodoListDto>> DeleteTodoRecord(Guid todoRecordId)
+        public Task<bool> ToggleAll(bool status)
+        {
+            // Business Logic
+           return _todoListDao.ToggleAll(status);
+        }
+
+        public async Task<List<TodoListDto>> DeleteTodoRecord(string todoRecordId)
         {
             // Business Logic
             var result = await _todoListDao.DeleteTodoRecord(todoRecordId);
