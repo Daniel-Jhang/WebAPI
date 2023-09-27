@@ -7,6 +7,6 @@
         Task<TodoListDto> UpdateTodoRecord(TodoListDto todoRecord);
         Task<bool> ToggleAll(bool status);
         Task<List<TodoListDto>> DeleteTodoRecord(string todoRecordId);
-        Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList);
+        Task<List<TodoListDto>> ClearCompleted(List<string> completedIdList);
     }
 }

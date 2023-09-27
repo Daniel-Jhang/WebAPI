@@ -132,12 +132,12 @@
         }
 
         [HttpDelete("clearCompleted")]
-        public async Task<ApiResultModel> ClearCompleted(List<Guid> todoRecordIdList)
+        public async Task<ApiResultModel> ClearCompleted(List<string> completedIdList)
         {
             try
             {
                 var result = new ApiResultDataModel();
-                var data = await _todoListService.ClearCompleted(todoRecordIdList);
+                var data = await _todoListService.ClearCompleted(completedIdList);
                 result.Data = data;
                 result.IsSuccess = true;
                 return result;

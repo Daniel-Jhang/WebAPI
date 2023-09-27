@@ -48,10 +48,10 @@
             return result;
         }
 
-        public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
+        public async Task<List<TodoListDto>> ClearCompleted(List<string> completedIdList)
         {
             // Business Logic
-          var result = await _todoListDao.ClearCompleted(todoRecordIdList);
+          var result = await _todoListDao.ClearCompleted(completedIdList);
             return result;
         }
     }

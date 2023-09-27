@@ -198,16 +198,23 @@
                 throw new Exception($"刪除待辦事項時發生錯誤: {ex}");
             }
         }
-        public async Task<List<TodoListDto>> ClearCompleted(List<Guid> todoRecordIdList)
+        public async Task<List<TodoListDto>> ClearCompleted(List<string> completedIdList)
         {
             try
             {
+                // 將 ID 轉換成 Guid (使用 LINQ 將 ID 轉換成 Guid，並且過濾掉無效的 Guid)
+                List<Guid> idList = completedIdList.Select(item => Guid.TryParse(item, out var id) ? id : Guid.Empty)
+                                                    .Where(id => id != Guid.Empty).ToList();
+
                 using (var dbTransaction = await _dbContext.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        var todoRecordsToClear = _dbContext.TodoLists.Where(x => todoRecordIdList.Contains(x.TodoId)).ToList();
+                        var todoRecordsToClear = _dbContext.TodoLists.Where(x => idList.Contains(x.TodoId)).ToList();
                         _dbContext.TodoLists.RemoveRange(todoRecordsToClear);
+
+                        await _dbContext.SaveChangesAsync();
+                        await dbTransaction.CommitAsync();
                     }
                     catch (SqlException ex)
                     {
