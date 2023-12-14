@@ -57,10 +57,10 @@
             {
                 if (!todoRecordId.HasValue && string.IsNullOrEmpty(context))
                 {
-                    return new TodoListDto();
+                    throw new Exception("請輸入待辦事項的ID或內容");
                 }
 
-                TodoList? record = null;
+                TodoList record = null!;
                 if (todoRecordId.HasValue)
                 {
                     record = await GetTodoRecordById(todoRecordId.Value.ToString());
@@ -70,14 +70,9 @@
                     record = await GetTodoRecordByContext(context);
                 }
 
-                if (record == null)
-                {
-                    return new TodoListDto();
-                }
-
                 return new TodoListDto
                 {
-                    TodoId = todoRecordId?.ToString(),
+                    TodoId = record.TodoId.ToString(),
                     Status = record.Status,
                     Context = record.Context,
                     Editing = record.Editing
@@ -137,34 +132,6 @@
             catch (Exception ex)
             {
                 throw new Exception($"更新待辦事項時發生錯誤: {ex}");
-            }
-        }
-        public async Task<bool> ToggleAll(bool status)
-        {
-            using var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
-
-            try
-            {
-                foreach (var item in _dbContext.TodoLists.ToList())
-                {
-                    item.Status = status;
-                }
-
-                await _dbContext.SaveChangesAsync();
-                await dbTransaction.CommitAsync();
-                return true;
-            }
-            catch (SqlException ex)
-            {
-                // 發生例外時進行回滾
-                await dbTransaction.RollbackAsync();
-                // 將例外訊息記錄至日誌
-                _logger.Error($"資料庫交易(Transaction)時發生問題: ToggleAll(), {ex.Message}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"更新所有待辦事項狀態時發生錯誤: {ex}");
             }
         }
         public async Task<List<TodoListDto>> DeleteTodoRecord(string todoRecordId)
@@ -234,6 +201,46 @@
                 throw new Exception($"刪除 已完成 待辦事項時發生錯誤: {ex}");
             }
         }
+        public async Task<bool> CheckIsExists(string? context = null)
+        {
+            if (!string.IsNullOrEmpty(context))
+            {
+                var record = await _dbContext.TodoLists.SingleOrDefaultAsync(x => x.Context == context);
+                if (record == null)
+                {
+                  return false;
+                }
+            }
+            return true;
+        }
+        public async Task<bool> ToggleAll(bool status)
+        {
+            using var dbTransaction = await _dbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var item in _dbContext.TodoLists.ToList())
+                {
+                    item.Status = status;
+                }
+
+                await _dbContext.SaveChangesAsync();
+                await dbTransaction.CommitAsync();
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                // 發生例外時進行回滾
+                await dbTransaction.RollbackAsync();
+                // 將例外訊息記錄至日誌
+                _logger.Error($"資料庫交易(Transaction)時發生問題: ToggleAll(), {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"更新所有待辦事項狀態時發生錯誤: {ex}");
+            }
+        }
         private async Task<TodoList> GetTodoRecordById(string todoRecordId)
         {
             if (!Guid.TryParse(todoRecordId, out Guid queryTodoId))
@@ -250,17 +257,15 @@
             }
             return todoRecord;
         }
-        private async Task<TodoList?> GetTodoRecordByContext(string context)
+        private async Task<TodoList> GetTodoRecordByContext(string context)
         {
-            try
-            {
-                return await _dbContext.TodoLists.SingleOrDefaultAsync(x => x.Context == context);
-            }
-            catch (Exception ex)
+            var todoRecord = await _dbContext.TodoLists.SingleOrDefaultAsync(x => x.Context == context);
+            if (todoRecord == null)
             {
                 _logger.Error($"找不到指定的待辦事項紀錄，待辦事項: {context} 不存在");
-                throw new KeyNotFoundException($"找不到指定的待辦事項紀錄，待辦事項: {context} 不存在", ex);
+                throw new KeyNotFoundException($"找不到指定的待辦事項紀錄，待辦事項: {context} 不存在");
             }
+            return todoRecord;
         }
     }
 }

@@ -13,14 +13,19 @@
 
         public async Task<TodoListDto> CreateTodoRecord(TodoListDto todoRecord)
         {
-            var existTodoRecord = await _todoListDao.GetTodoRecord(context: todoRecord.Context);
-            if (existTodoRecord.TodoId != null)
+            var isRecordExist = await _todoListDao.CheckIsExists(context: todoRecord.Context);
+            if (isRecordExist)
             {
                 _logger.Error("紀錄重複");
                 throw new Exception("紀錄重複");
             }
             var recordToCreate = await _todoListDao.CreateTodoRecord(todoRecord);
             return recordToCreate;
+        }
+
+        public Task<TodoListDto> GetTodoRecord(string context)
+        {
+            return _todoListDao.GetTodoRecord(context: context);
         }
 
         public async Task<List<TodoListDto>> GetAllTodoList()

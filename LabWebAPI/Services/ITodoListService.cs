@@ -3,6 +3,7 @@
     public interface ITodoListService
     {
         Task<TodoListDto> CreateTodoRecord(TodoListDto todoRecord);
+        Task<TodoListDto> GetTodoRecord(string context);
         Task<List<TodoListDto>> GetAllTodoList();
         Task<TodoListDto> UpdateTodoRecord(TodoListDto todoRecord);
         Task<bool> ToggleAll(bool status);

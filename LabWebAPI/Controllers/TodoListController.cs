@@ -45,12 +45,20 @@
         }
 
         [HttpGet]
-        public async Task<ApiResultModel> Get()
+        public async Task<ApiResultModel> Get(string? context = null)
         {
             try
             {
                 var result = new ApiResultDataModel();
-                var data = await _todoListService.GetAllTodoList();
+                object data = null!;
+                if (!string.IsNullOrEmpty(context))
+                {
+                    data = await _todoListService.GetTodoRecord(context);
+                    result.Data = data;
+                    result.IsSuccess = true;
+                    return result;
+                }
+                data = await _todoListService.GetAllTodoList();
                 result.Data = data;
                 result.IsSuccess = true;
                 return result;

@@ -9,5 +9,6 @@
         Task<bool> ToggleAll(bool status);
         Task<List<TodoListDto>> DeleteTodoRecord(string todoRecordId);
         Task<List<TodoListDto>> ClearCompleted(List<string> completedIdList);
+        Task<bool> CheckIsExists(string? context = null);
     }
 }
